@@ -128,6 +128,9 @@ function Sigin({ login, resendEmail }) {
             placeholder="Enter password"
           />
         </div>
+        <p className="forgot-password text-right" style={{ marginBottom: "10px" }}>
+          <a href="#/forgotpassword">Forgot password?</a>
+        </p>
 
         <div className="d-grid" style={{textAlign:'center'}}>
           <button
@@ -138,9 +141,15 @@ function Sigin({ login, resendEmail }) {
             Sign-In
           </button>
         </div>
-        <p className="forgot-password text-right">
-          go to <a href="#/signup">Sign-Up</a>
+        <div style={{display:"flex", flexDirection:"column", alignItems:"center", marginTop: "30px", }}>
+        <p className="forgot-password text-right" >
+          Don't have an account? <a href="#/signup">Sign-Up</a>
         </p>
+       
+        <p className="forgot-password text-right">
+        <a href="#/resetpassword">Reset password</a>
+        </p>
+        </div>
       </div>
       <Loader fullPage loading={isLoading} />
     </div>

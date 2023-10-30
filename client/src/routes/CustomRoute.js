@@ -54,6 +54,9 @@ import ScavengerPaymentMobile from "../components/ScavengerPaymentMobile";
 import AgreementForm from "../components/AgreementForm";
 import Scheduler from "../components/Scheduler";
 import Community from "../components/Community";
+import ResetPassword from "../components/auth/ResetPassword";
+import ForgotPassword from "../components/auth/ForgotPassword";
+import SetNewPassword from "../components/auth/ResetNewPassword"
 
 const CustomRoute = () => {
   const location = useLocation();
@@ -84,6 +87,9 @@ const CustomRoute = () => {
 
               <Route path="/signin" element={<Login />} />
               <Route path="/signup" element={<SignUp />} />
+              <Route path="/setnewpassword" element={<SetNewPassword />} />
+              <Route path="/resetpassword" element={<ResetPassword />} />
+              <Route path="/forgotpassword" element={<ForgotPassword />} />
               <Route path="/introduction" element={<Introduction />} />
               <Route path="/sponsorship" element={<Sponsorship />} />
               <Route path="/proposed_agenda" element={<ProposedAgenda />} />
@@ -248,6 +254,9 @@ const CustomRoute = () => {
             />
             <Route path="/signin/" element={<LoginMobile />} />
             <Route path="/signup" element={<SignUpMobile />} />
+            <Route path="/setnewpassword" element={<SetNewPassword />} />
+            <Route path="/resetpassword" element={<ResetPassword />} />
+            <Route path="/forgotpassword" element={<ForgotPassword />} />
             <Route path="/introduction" element={<Introduction />} />
             <Route path="/sponsorship" element={<Sponsorship />} />
             <Route path="/proposed_agenda" element={<ProposedAgenda />} />

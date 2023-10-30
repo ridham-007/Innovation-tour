@@ -455,6 +455,10 @@ ul {
   border: 1px solid #ebdddd;
   border-radius: 10px;
   box-shadow: 12px 12px 12px 11px #cecaca;
+  
+  @media (max-width: 768px) {
+    width: 90%;
+  }
 }
 
 .auth-mobile-wrapper {
