@@ -13,6 +13,8 @@ router.post("/getalluser", authenticationController.getAllUser);
 router.post("/updateuser", authenticationController.updateUser);
 router.post("/deleteuser", authenticationController.deleteUser);
 router.post("/resetPassword", authenticationController.resetPassword);
+router.post("/forgotPassword", authenticationController.forgotPassword);
+router.post("/setPassword", authenticationController.resetPasswordUsingToken);
 
 
 //SignIn

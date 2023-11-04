@@ -6,6 +6,7 @@ const express = require("express");
 const crypto = require("crypto");
 require("dotenv").config();
 var bcrypt = require("bcrypt-nodejs");
+const sendForgotEMail = require("../utils/forgitemail");
 
 
 let config = require("../config/database"),
@@ -315,7 +316,7 @@ exports.resetPassword = async (req, res) => {
     let user = await User.findOne({ email });
 
     await bcrypt.compare(currentPassword, user.password, async function (err, isMatch) {
-      console.log({err, isMatch})
+      console.log({ err, isMatch })
       if (err) {
         res.status(400).json({
           success: false,
@@ -337,6 +338,60 @@ exports.resetPassword = async (req, res) => {
         });
       }
     });
+  } catch (error) {
+    res.status(400).send("An error occured");
+  }
+};
+
+exports.forgotPassword = async (req, res) => {
+  const {
+    email
+  } = req.body;
+  const user = await User.findOne({
+    email
+  });
+  if (user) {
+    const token = jwt.sign(user.toJSON(), config.secret);
+    const message = `${process.env.SET_PASSWORD_URL}?token=${token}`;
+    try {
+      await sendForgotEMail(email, message);
+    } catch (e) {
+      console.log(e);
+    }
+    res.status(200).json({
+      success: true,
+      msg: "Mail has been sent successfully!!",
+    });
+  } else {
+    console.log({ user })
+    res.status(400).json({
+      success: false,
+      msg: "User not found!!",
+    });
+  }
+}
+
+exports.resetPasswordUsingToken = async (req, res) => {
+  try {
+    const {
+      newPassword,
+    } = req.body;
+    const authToken = req.headers.authorization?.split(' ');
+    if (authToken?.length === 2) {
+      const decodedToken = jwt.decode(authToken[1]);
+      const user = await User.findById(decodedToken._id);
+      user.password = newPassword;
+      await user.save();
+      res.status(200).json({
+        success: true,
+        msg: "Password Updaated Successfully!!",
+      });
+    } else {
+      res.status(400).json({
+        success: false,
+        msg: "Invalid Token",
+      });
+    }
   } catch (error) {
     res.status(400).send("An error occured");
   }
