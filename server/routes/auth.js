@@ -12,6 +12,8 @@ router.post("/signup", authenticationController.signup);
 router.post("/getalluser", authenticationController.getAllUser);
 router.post("/updateuser", authenticationController.updateUser);
 router.post("/deleteuser", authenticationController.deleteUser);
+router.post("/resetPassword", authenticationController.resetPassword);
+
 
 //SignIn
 router.post("/signin", authenticationController.signin);

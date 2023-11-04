@@ -5,6 +5,7 @@ const { User, validate } = require("../models/user");
 const express = require("express");
 const crypto = require("crypto");
 require("dotenv").config();
+var bcrypt = require("bcrypt-nodejs");
 
 
 let config = require("../config/database"),
@@ -302,4 +303,41 @@ exports.scavenger = async (req, res) => {
   }
 
 
+};
+
+exports.resetPassword = async (req, res) => {
+  try {
+    const {
+      email,
+      currentPassword,
+      newPassword,
+    } = req.body;
+    let user = await User.findOne({ email });
+
+    await bcrypt.compare(currentPassword, user.password, async function (err, isMatch) {
+      console.log({err, isMatch})
+      if (err) {
+        res.status(400).json({
+          success: false,
+          msg: "Current password wrong!!",
+        });
+      }
+      if (isMatch) {
+        user.password = newPassword;
+        await user.save();
+        res.status(400).json({
+          success: true,
+          msg: "Password updated successfully!!",
+        });
+      } else {
+
+        res.status(400).json({
+          success: false,
+          msg: "Something went wrong!",
+        });
+      }
+    });
+  } catch (error) {
+    res.status(400).send("An error occured");
+  }
 };
