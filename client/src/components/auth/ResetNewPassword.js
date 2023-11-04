@@ -1,25 +1,29 @@
 import React, { useContext, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { notification, Modal } from "antd";
 import { LoadingOverlay, Loader } from "react-overlay-loader";
 import "react-overlay-loader/styles.css";
+import { resetPasswordEmail } from "../../actions/auth";
 
 function SetNewPassword() {
   const [isLoading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
   const [state, setState] = useState({
-    newpassword: "",
+    newPassword: "",
     confirmpassword: "",
   });
+  const [params] = useSearchParams();
+  const EmailToken = params.get("token");
+
 
   function onInputChange(e) {
     let { name, value } = e.target;
     setState({ ...state, [name]: value });
   }
 
-  const handleResetPassword = () => {
-    if (state.newpassword === "") {
+  const handleResetPassword = async () => {
+    if (state.newPassword === "") {
       notification.open({
         message: "Error",
         description: "New password field is required!",
@@ -33,17 +37,26 @@ function SetNewPassword() {
       });
       return;
     }
-    if (state.newpassword !== state.confirmpassword) {
+    if (state.newPassword !== state.confirmpassword) {
       notification.open({
         message: "Error",
         description: "New passwords do not match",
       });
       return;
-    }else{
-      setLoading(true);
     }
-   
+    return true
   };
+
+  const handleSubmit = async () => {
+    setLoading(true);
+    const validate = await handleResetPassword()
+    if(validate){
+      delete state.confirmpassword;
+      await resetPasswordEmail(state, EmailToken)
+      navigate('/')
+    }
+    setLoading(false);
+  }
   
   return (
     <div className="auth-container">
@@ -52,7 +65,7 @@ function SetNewPassword() {
 
         <div
           className="mb-3"
-          value={state.newpassword}
+          value={state.newPassword}
           style={{
             display: "flex",
             alignItems: "center",
@@ -62,7 +75,7 @@ function SetNewPassword() {
         >
           <label>New Password:</label>
           <input
-            name="newpassword"
+            name="newPassword"
             type="password"
             className="form-control"
             onChange={(e) => onInputChange(e)}
@@ -96,7 +109,7 @@ function SetNewPassword() {
           <button
             type="submit"
             className="btn btn-primary"
-            onClick={handleResetPassword}
+            onClick={handleSubmit}
           >
             Submit
           </button>

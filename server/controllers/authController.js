@@ -322,8 +322,7 @@ exports.resetPassword = async (req, res) => {
           success: false,
           msg: "Current password wrong!!",
         });
-      }
-      if (isMatch) {
+      } else if (isMatch) {
         user.password = newPassword;
         await user.save();
         res.status(400).json({

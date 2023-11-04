@@ -3,12 +3,14 @@ import { useNavigate } from "react-router-dom";
 import { LoadingOverlay, Loader } from "react-overlay-loader";
 import "react-overlay-loader/styles.css";
 import { notification, Modal } from "antd";
+import { resetPassword } from "../../actions/auth";
 
 function ResetPassword({ login, resendEmail }) {
   const [isLoading, setLoading] = useState(false);
   const navigate = useNavigate();
   const [message, setMessage] = useState("");
-  const [state, setState] = useState({
+  const [password, setPassword] = useState({
+    email:"",
     currentpassword: "",
     newpassword: "",
     confirmpassword: "",
@@ -16,42 +18,56 @@ function ResetPassword({ login, resendEmail }) {
 
   function onInputChange(e) {
     let { name, value } = e.target;
-    setState({ ...state, [name]: value });
+    setPassword({ ...password, [name]: value });
   }
 
   const handleResetPassword = () => {
-    if (state.currentpassword === "") {
+    if (password.currentpassword === "") {
       notification.open({
         message: "Error",
         description: "Current password field is required!",
       });
       return;
     }
-    if (state.newpassword === "") {
+    if (password.newpassword === "") {
       notification.open({
         message: "Error",
         description: "New password field is required!",
       });
       return;
     }
-    if (state.confirmpassword === "") {
+    if (password.confirmpassword === "") {
       notification.open({
         message: "Error",
         description: "Confirm password field is required!",
       });
       return;
     }
-    if (state.newpassword !== state.confirmpassword) {
+    if (password.newpassword !== password.confirmpassword) {
       notification.open({
         message: "Error",
         description: "New passwords do not match",
       });
       return;
-    }else{
-      setLoading(true);
     }
-  
+    return true
   };
+  const handleEmailValidate = () =>{
+    const emailRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;;
+    if(!password.email.match(emailRegex)){
+      return;
+    }
+    return true
+  }
+
+  const handleSubmit = async () => {
+    if(handleResetPassword() && handleEmailValidate()){
+      delete password.confirmpassword
+      await resetPassword(password);
+    }
+    setLoading(false)
+  }
+
   
   return (
     <div className="auth-container">
@@ -60,7 +76,28 @@ function ResetPassword({ login, resendEmail }) {
 
         <div
           className="mb-3"
-          value={state.currentpassword}
+          value={password.email}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            flexDirection: "row",
+          }}
+        >
+          <label>Email Address:</label>
+          <input
+            name="email"
+            type="email"
+            className="form-control"
+            onChange={(e) => onInputChange(e)}
+            style={{ width: "70%" }}
+            placeholder="Enter Your Email"
+          />
+        </div>
+
+        <div
+          className="mb-3"
+          value={password.currentpassword}
           style={{
             display: "flex",
             alignItems: "center",
@@ -81,7 +118,7 @@ function ResetPassword({ login, resendEmail }) {
 
         <div
           className="mb-3"
-          value={state.newpassword}
+          value={password.newpassword}
           style={{
             display: "flex",
             alignItems: "center",
@@ -102,7 +139,7 @@ function ResetPassword({ login, resendEmail }) {
 
         <div
           className="mb-3"
-          value={state.confirmpassword}
+          value={password.confirmpassword}
           style={{
             display: "flex",
             alignItems: "center",
@@ -125,7 +162,7 @@ function ResetPassword({ login, resendEmail }) {
           <button
             type="submit"
             className="btn btn-primary"
-            onClick={handleResetPassword}
+            onClick={handleSubmit}
           >
             Reset password
           </button>

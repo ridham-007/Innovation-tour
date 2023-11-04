@@ -1,5 +1,5 @@
 import axios from "axios";
-axios.defaults.baseURL = "https://japan-innovation-tour.onrender.com/api";
+axios.defaults.baseURL = "http://localhost:8080/api";
 
 const register = async (data) => {
   return await axios
@@ -142,5 +142,41 @@ const unRegister = async (data) => {
       return err.response.data;
     });
 }
+const forgotPasswordEmail = async (data) => {
+  return await axios
+    .post(`/forgotPassword`, data)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      return err.response.data;
+    });
+}
+const resetPassword = async (data) => {
+  return await axios
+    .post(`/resetPassword`, data)
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      return err.response.data;
+    });
+}
+const resetPasswordEmail = async (data, EmailToken) => {
+  return await axios
+    .post(`/setPassword`,{
+      ...data
+    }, {
+      headers: {
+        'Authorization': `Bearer ${EmailToken}`
+      },
+    })
+    .then((res) => {
+      return res.data;
+    })
+    .catch((err) => {
+      return err.response.data;
+    });
+}
 
-export { register, login, resendEmail, getAllTask, unRegister, getAllUsers, updateUser, deleteUser, scavenger, addTask, updateTask, deleteTask, addMeeting };
+export { register, login, resendEmail, getAllTask, unRegister, getAllUsers, updateUser, deleteUser, scavenger, addTask, updateTask, deleteTask, addMeeting, forgotPasswordEmail, resetPassword, resetPasswordEmail };
